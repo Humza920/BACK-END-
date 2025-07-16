@@ -27,6 +27,18 @@ app.delete("/deleteone/:name" , async(req , res)=>{
     res.send("user deleted")
 })
 
+app.patch("/updateuserinfo/:id", async(req , res)=>{
+    const id = req.params.id
+    const updatedData = req.body
+    
+    const user = await User.findByIdAndUpdate(id , updatedData ,{
+        new : true
+    })
+    res.send("user updated" + user)
+    console.log(user);
+    
+})
+
 connectionWithDb().then(() => {
     console.log("Successfully connected to the Databse")
 }).catch(() => {
