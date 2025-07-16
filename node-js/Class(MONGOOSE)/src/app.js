@@ -13,7 +13,7 @@ app.post("/adduser" , async(req , res)=>{
     user.save()
 })
 
-app.get("/" , async(req , res)=>{
+app.get("/getallusers" , async(req , res)=>{
     const user = await User.find({})
     console.log(user);
     res.send(user)
