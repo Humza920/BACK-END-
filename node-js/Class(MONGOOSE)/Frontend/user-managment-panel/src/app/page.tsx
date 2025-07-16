@@ -1,14 +1,25 @@
-export default function Home() {
+import Users from "@/components/Users"
 
- const getreq = async () => {
-   const usersall = await fetch("http://localhost:4000/getallusers" , {
+export default async function Home() {  
+  type User = {
+    _id : string
+     firstname : string
+        lastname : string
+        userage : number
+        isVaccinated : boolean
+        useremail : string
+        userpass : string
+  }
+   let res : Response = await fetch("http://localhost:4000/getallusers" , {
     method: "GET"
   })
-  console.log(usersall);
-  }
-  getreq()
+
+  const users : User[] = await res.json()
+  console.log(users);
+  
   return (
     <>
+    <Users usersarr = {users}/>
     </>
   );
 }
