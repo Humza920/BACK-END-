@@ -45,7 +45,7 @@ export default function RootLayout({
                 Home
               </a>
               <a
-                href="/add-user"
+                href="/Adduser"
                 className="flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

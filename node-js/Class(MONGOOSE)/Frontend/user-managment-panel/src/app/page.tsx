@@ -11,7 +11,8 @@ export default async function Home() {
         studentpass : string
   }
    let res : Response = await fetch("http://localhost:4000/getallusers" , {
-    method: "GET"
+    method: "GET",
+    cache: "no-store"
   })
 
   const users : User[] = await res.json()

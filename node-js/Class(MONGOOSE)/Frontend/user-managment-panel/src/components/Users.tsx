@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type student = {
   _id: string;
@@ -18,14 +19,17 @@ type studentsProps = {
 
 const students = ({ studentsarr }: studentsProps) => {
 
-const [students , setstudents] = useState(studentsarr)
+const [students , setstudents] =  useState<student[]>(studentsarr)
+const router = useRouter()
 
 async function deleteStudent(id : string) {
   console.log(id);
-  
   await fetch(`http://localhost:4000/deleteone/${id}`,{
     method : "DELETE"
   })
+  setstudents(students.filter(delstud => delstud._id!==id))
+ router.refresh()
+  
 }
   
 
