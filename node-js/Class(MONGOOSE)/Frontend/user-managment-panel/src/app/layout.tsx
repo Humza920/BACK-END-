@@ -53,20 +53,12 @@ export default function RootLayout({
                 </svg>
                 Add User
               </a>
-              <a
-                href="/all-users"
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                All Users
-              </a>
+             
             </nav>
           </aside>
 
           {/* Page Content */}
-          <main className="flex-1 p-6 sm:p-8 max-w-7xl mx-auto w-full">
+          <main className="w-full">
             {children}
           </main>
         </div>
