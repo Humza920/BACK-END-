@@ -25,6 +25,12 @@ app.get("/getallusers" , async(req , res)=>{
     res.send(user)
 })
 
+app.get("/getsingleuser/:id" , async (req , res) => {
+    const id = req.params.id
+    const user = await Student.findById(id)
+    res.send(user)
+})
+
 app.delete("/deleteone/:id" , async(req , res)=>{
     const id = req.params.id
     console.log(id);
