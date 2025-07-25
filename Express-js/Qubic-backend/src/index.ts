@@ -1,11 +1,14 @@
-const express = require("express")
-const helmet = require("helmet")
-const cors = require("cors")
-const morgan = require("morgan")
+import dotenv from "dotenv";
+import  express , { Application }   from "express"
+import  {applyMiddlewares}  from "./middlewares/main.js";
+import { connectWithDb } from "./config/conectdb.js";
+dotenv.config()
 
-const app = express()
+const app : Application = express()
+applyMiddlewares(app)
 
-app.use(helmet())
-app.use(cors())
-app.use(express.json())
-app.use(morgan("dev"))
+
+connectWithDb()
+app.listen(process.env.PORT , ()=>{
+    console.log("SERVER RUNNING " + process.env.PORT);
+})
