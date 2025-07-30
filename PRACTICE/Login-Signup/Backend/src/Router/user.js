@@ -16,4 +16,21 @@ userRouter.get("/getuser" , userauth , async(req , res)=>{
     }
 })
 
+userRouter.get("/getallusers" , userauth , async(req , res)=>{
+    try {
+        const users = await Users.find({})
+        if (!users) {
+            throw new Error("Error fetching users");
+        } else {
+            res.send({
+                message : "SUCCESS",
+                users
+            })
+        }
+    } catch (err) {
+        res.status(400).send("ERROR: " + err.message);
+    }
+})
+
+
 module.exports = userRouter

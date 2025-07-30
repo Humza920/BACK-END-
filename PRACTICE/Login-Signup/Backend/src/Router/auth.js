@@ -30,7 +30,7 @@ appRouter.post("/signup", async (req, res) => {
         await user.save()
         
 
-        const token = await jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "1d" })
+        const token = await jwt.sign({ id: user._id },process.env.SECRET_KEY, { expiresIn: "1d" })
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -42,7 +42,6 @@ appRouter.post("/signup", async (req, res) => {
         res.send('User Added Successfully !')
     } catch (error) {
         res.status(400).send("Error: " + error.message)
-
     }
 })
 
