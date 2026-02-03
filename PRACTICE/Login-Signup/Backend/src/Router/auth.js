@@ -2,6 +2,7 @@ const express = require("express")
 const {Users} = require("../model/users")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const validator = require("validator")
 const appRouter = express.Router()
 
 
@@ -17,6 +18,10 @@ appRouter.post("/signup", async (req, res) => {
         else if (!password) {
             throw new Error("ENTER YOUR PASSWORD")
         }
+
+        if (!validator.isStrongPassword(password)) {
+    throw new Error("Use Strong Password (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol)");
+}
 
         const hashedpass = await bcrypt.hash(password, Number(process.env.HASH_PASS))
 
@@ -76,5 +81,6 @@ appRouter.post("/logout" , async(req , res)=>{
     res.clearCookie("token")
     res.send("logout successfull")
 })
+
 
 module.exports = appRouter

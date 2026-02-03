@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Real Socket Test</title>
+  </head>
+  <body>
+    <h2>🔐 Login & Socket Test</h2>
+
+    <!-- LOGIN FORM -->
+    <input type="email" id="email" placeholder="Email" />
+    <br /><br />
+    <input type="password" id="password" placeholder="Password" />
+    <br /><br />
+
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" disabled>Logout</button>
+    <!-- LOGOUT BUTTON -->
+
+    <hr />
+
+    <ul id="messages"></ul>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <script>
+      const loginBtn = document.getElementById("loginBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const messages = document.getElementById("messages");
+
+      let socket;
+      let authToken;
+      let userRole;
+
+      const BACKEND_URL = "http://localhost:4000";
+
+      // 🔹 PAGE LOAD PAR CHECK KARO: data pehle se hai?
+      const storedData = localStorage.getItem("userData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+
+        authToken = parsedData.token;
+        userRole = parsedData.user?.roleTitle;
+        userName = parsedData.user?.name;
+
+        addMessage(`♻️ Session restored as ${userRole} , ${userName}`);
+        connectSocket(authToken);
+        logoutBtn.disabled = false;
+      }
+
+      // 🔹 LOGIN API CALL
+      loginBtn.addEventListener("click", async () => {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+          authToken = data.token;
+          console.log("LOGIN RESPONSE:", data);
+
+          if (!data) {
+            addMessage("❌ Login failed");
+            return;
+          } else {
+            localStorage.setItem("userData", JSON.stringify(data));
+            connectSocket(authToken);
+          }
+
+          userRole = data.user.roleTitle;
+          userName = data.user.name;
+          addMessage(`✅ Logged in as ${userRole} , ${userName}`);
+          logoutBtn.disabled = false;
+        } catch (err) {
+          addMessage("❌ Login error");
+        }
+      });
+
+      function connectSocket(authToken) {
+        socket = io(BACKEND_URL, {
+          auth: { token: authToken },
+        });
+
+        socket.on("connect", () => {
+          addMessage(`🔌 Socket connected (${socket.id})`);
+        });
+
+        socket.on("disconnect", () => {
+          addMessage("❌ Socket disconnected");
+        });
+
+        // 🔔 REAL-TIME NOTIFICATION
+        socket.on("notification", (data) => {
+          console.log("🔔 Notification received:", data);
+
+          addMessage(`🔔 ${data.type}: ${data.message}`);
+
+          // OPTIONAL: browser alert (testing ke liye)
+          // alert(data.message);
+        });
+
+        socket.on("unauthorized", (data) => {
+          addMessage("🚫 Unauthorized: " + data.message);
+        });
+
+        // 🔹 ROLE BASED EVENTS
+        socket.on("newPatient", (data) => {
+          addMessage("🧾 New Patient: " + JSON.stringify(data));
+        });
+
+        socket.on("newToken", (data) => {
+          addMessage("🎟️ New Token: " + JSON.stringify(data));
+        });
+
+        socket.on("dashboardAlert", (data) => {
+          addMessage("📊 Admin Alert: " + JSON.stringify(data));
+        });
+      }
+
+      // 🔹 LOGOUT BUTTON
+      logoutBtn.addEventListener("click", () => {
+        // 1️⃣ Disconnect socket
+        if (socket) {
+          socket.disconnect();
+          socket = null;
+        }
+
+        // 2️⃣ Clear local storage
+        localStorage.removeItem("userData");
+        authToken = null;
+        userRole = null;
+
+        // 3️⃣ Disable buttons
+        logoutBtn.disabled = true;
+
+        addMessage("🚪 Logged out and socket disconnected");
+      });
+
+      function addMessage(msg) {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        messages.appendChild(li);
+      }
+    </script>
+  </body>
+</html>
